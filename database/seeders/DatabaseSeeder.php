@@ -23,6 +23,12 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
+        // Idempotent: only seed demo projects once so this can run safely
+        // on every deploy/boot without duplicating data.
+        if (Project::query()->exists()) {
+            return;
+        }
+
         foreach ($this->projects() as $data) {
             $project = Project::create($data['project']);
 
