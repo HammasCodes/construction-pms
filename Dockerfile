@@ -6,7 +6,10 @@
 FROM node:22-alpine AS assets
 WORKDIR /app
 COPY package.json package-lock.json ./
-RUN npm ci
+# npm install (not ci): the lock file is generated on Windows, and npm ci is
+# strict about cross-platform optional deps on musl Linux. install resolves
+# fresh for this build platform and is reliable here.
+RUN npm install --no-audit --no-fund
 COPY . .
 RUN npm run build
 
